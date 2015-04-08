@@ -32,6 +32,7 @@ var args = nopt(
 
 var outhtml = args.html;
 var outscript = args.js;
+var outScriptUri = path.relative(path.dirname(args.html), args.js);
 
 if (!outhtml) {
   console.log('Missing output html file!');
@@ -46,7 +47,7 @@ if (!outscript) {
 var docText = '';
 
 function processSource() {
-  var split = crisp.split(docText, outscript);
+  var split = crisp.split(docText, outScriptUri);
   fs.writeFileSync(outhtml, split.html, 'utf-8');
   fs.writeFileSync(outscript, split.js, 'utf-8');
 }
