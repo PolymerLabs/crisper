@@ -1,8 +1,11 @@
 {
   "name": "crisper",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Make an HTML file with inline scripts CSP compliant",
   "main": "index.js",
+  "bin": {
+    "crisper": "bin/crisper"
+  },
   "scripts": {
     "test": "node_modules/.bin/jshint --verbose bin/crisper index.js test/test.js && node_modules/.bin/mocha"
   },
