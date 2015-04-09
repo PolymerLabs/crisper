@@ -50,7 +50,8 @@ function split(source, jsFileName) {
   dom5.append(body, newScript);
 
   var html = dom5.serialize(doc);
-  var js = contents.join(';');
+  // newline + semicolon should be enough to capture all cases of concat
+  var js = contents.join('\n;');
 
   return {
     html: html,

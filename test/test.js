@@ -72,6 +72,12 @@ suite('Crisper', function() {
         assert.equal(unknownIndex, -1);
       });
 
+      test('Newline Semicolon should be used for concating', function() {
+        var script = obj.js;
+        var expected = '//inline comment\n;var next_statement';
+        var actual = script.indexOf(expected);
+        assert(actual > -1);
+      });
     });
   });
 });
