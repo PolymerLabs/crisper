@@ -25,11 +25,11 @@ line
 
 Or programmatically
 
-    vulcanize.process('index'.html, function(err, html) {
+    vulcanize.process('index.html', function(err, html) {
       if (err) {
         return cb(err);
       } else {
-        var out = crisper(html, jsFilename)
+        var out = crisper.split(html, jsFilename)
         cb(null, out.html, out.js);
       }
     });
