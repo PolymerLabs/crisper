@@ -28,6 +28,8 @@ var inlineScriptFinder = pred.AND(
   )
 );
 
+var noSemiColonInsertion = /\/\/|;\s*$|\*\/\s*$/;
+
 function split(source, jsFileName) {
   var doc = dom5.parse(source);
   var head = dom5.query(doc, pred.hasTagName('head'));
@@ -43,7 +45,11 @@ function split(source, jsFileName) {
     if (next && dom5.isTextNode(next) && !/\S/.test(dom5.getTextContent(next))) {
       dom5.remove(next);
     }
-    contents.push(dom5.getTextContent(sn));
+    var content = dom5.getTextContent(sn);
+    if (!noSemiColonInsertion.test(content)) {
+      content += ';';
+    }
+    contents.push(content);
   });
 
   var newScript = dom5.constructors.element('script');
@@ -52,7 +58,7 @@ function split(source, jsFileName) {
 
   var html = dom5.serialize(doc);
   // newline + semicolon should be enough to capture all cases of concat
-  var js = contents.join('\n;');
+  var js = contents.join('\n');
 
   return {
     html: html,

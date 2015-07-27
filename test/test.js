@@ -74,11 +74,17 @@ suite('Crisper', function() {
         assert.equal(unknownIndex, -1);
       });
 
-      test('Newline Semicolon should be used for concating', function() {
+      test('Newline Semicolon should be used for concating, when necessary', function() {
         var script = obj.js;
-        var expected = '//inline comment\n;var next_statement';
+        var expected = '//inline comment\nvar next_statement=\'found\';';
         var actual = script.indexOf(expected);
-        assert(actual > -1);
+        assert(actual > -1, 'semicolon in the wrong spot');
+        expected = 'var three = "three"; //still supported, but don\'t use!';
+        actual = script.indexOf(expected);
+        assert(actual > -1, 'semicolon inserted incorrectly');
+        expected = '//# sourceMappingURL=/dev/null';
+        actual = script.indexOf(expected);
+        assert(actual > -1, 'sourcemap had semicolon insertion incorrectly');
       });
     });
   });
