@@ -20,7 +20,8 @@ var inlineScriptFinder = pred.AND(
     pred.NOT(
       pred.hasAttr('type')
     ),
-    pred.hasAttrValue('type', 'application/javascript')
+    pred.hasAttrValue('type', 'application/javascript'),
+    pred.hasAttrValue('type', 'text/javascript')
   ),
   pred.NOT(
     pred.hasAttr('src')

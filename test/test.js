@@ -55,7 +55,9 @@ suite('Crisper', function() {
         var script = obj.js;
         var oneIndex = script.indexOf('one');
         var twoIndex = script.indexOf('two');
+        var threeIndex = script.indexOf('three');
         assert.ok(oneIndex < twoIndex);
+        assert.ok(twoIndex < threeIndex);
       });
 
       test('Unknown script types are not removed', function() {
