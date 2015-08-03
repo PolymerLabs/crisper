@@ -32,7 +32,6 @@ var noSemiColonInsertion = /\/\/|;\s*$|\*\/\s*$/;
 
 function split(source, jsFileName) {
   var doc = dom5.parse(source);
-  var head = dom5.query(doc, pred.hasTagName('head'));
   var body = dom5.query(doc, pred.hasTagName('body'));
   var scripts = dom5.queryAll(doc, inlineScriptFinder);
 
@@ -52,9 +51,11 @@ function split(source, jsFileName) {
     contents.push(content);
   });
 
-  var newScript = dom5.constructors.element('script');
-  dom5.setAttribute(newScript, 'src', jsFileName);
-  dom5.append(body, newScript);
+  if (contents.length > 0) {
+    var newScript = dom5.constructors.element('script');
+    dom5.setAttribute(newScript, 'src', jsFileName);
+    dom5.append(body, newScript);
+  }
 
   var html = dom5.serialize(doc);
   // newline + semicolon should be enough to capture all cases of concat

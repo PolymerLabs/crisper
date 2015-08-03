@@ -49,7 +49,9 @@ var docText = '';
 function processSource() {
   var split = crisp.split(docText, outScriptUri);
   fs.writeFileSync(outhtml, split.html, 'utf-8');
-  fs.writeFileSync(outscript, split.js, 'utf-8');
+  if (split.js) {
+    fs.writeFileSync(outscript, split.js, 'utf-8');
+  }
 }
 
 if (args.source) {
