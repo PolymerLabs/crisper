@@ -86,6 +86,15 @@ suite('Crisper', function() {
         actual = script.indexOf(expected);
         assert(actual > -1, 'sourcemap had semicolon insertion incorrectly');
       });
+
+      test('Only the last line is considered for semicolon insertion', function() {
+        var script = obj.js;
+        var expected = 'var statement;';
+        var lines = script.split('\n');
+        var actual = lines[lines.length - 1].trim();
+
+        assert.equal(actual, expected);
+      });
     });
   });
 });

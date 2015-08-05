@@ -45,8 +45,10 @@ function split(source, jsFileName) {
     if (next && dom5.isTextNode(next) && !/\S/.test(dom5.getTextContent(next))) {
       dom5.remove(next);
     }
-    var content = dom5.getTextContent(sn);
-    if (!noSemiColonInsertion.test(content)) {
+    var content = dom5.getTextContent(sn).trim();
+    var lines = content.split('\n');
+    var lastline = lines[lines.length - 1];
+    if (!noSemiColonInsertion.test(lastline)) {
       content += ';';
     }
     contents.push(content);
