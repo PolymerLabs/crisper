@@ -17,29 +17,52 @@ suite('Crisper', function() {
   var crisp = require('../index');
 
   suite('Split API', function() {
-    var obj;
-    setup(function() {
-      obj = crisp.split('', 'foo.js');
+    suite('Default', function () {
+      var obj;
+      setup(function() {
+        obj = crisp.split('<script>var foo = "bar";</script>', 'foo.js');
+      });
+
+      test('return object with js and html properties', function() {
+        assert.property(obj, 'html');
+        assert.property(obj, 'js');
+      });
+
+      test('output html is serialized', function() {
+        assert.typeOf(obj.html, 'string');
+      });
+
+      test('output js is linked via <script> in the output html <body>', function() {
+        var doc = dom5.parse(obj.html);
+        var outscript = dom5.query(doc, pred.AND(
+          pred.hasTagName('script'),
+          pred.hasAttrValue('src', 'foo.js')
+        ));
+        assert.ok(outscript);
+      });
+
     });
 
-    test('return object with js and html properties', function() {
-      assert.property(obj, 'html');
-      assert.property(obj, 'js');
-    });
+    suite('No JS', function() {
+      var obj;
+      setup(function() {
+        obj = crisp.split('<body>Hello World</body>', 'foo.js');
+      });
 
-    test('output html is serialized', function() {
-      assert.typeOf(obj.html, 'string');
-    });
+      test('js property is empty', function() {
+        assert.notOk(obj.js);
+      });
 
-    test('output js is linked via <script> in the output html <body>', function() {
-      var doc = dom5.parse(obj.html);
-      var outscript = dom5.query(doc, pred.AND(
-        pred.hasTagName('script'),
-        pred.hasAttrValue('src', 'foo.js')
-      ));
-      assert.ok(outscript);
-    });
+      test('output js is NOT linked via <script> in the output html <body>', function() {
+        var doc = dom5.parse(obj.html);
+        var outscript = dom5.query(doc, pred.AND(
+          pred.hasTagName('script'),
+          pred.hasAttrValue('src', 'foo.js')
+        ));
+        assert.notOk(outscript);
+      });
 
+    });
   });
 
   suite('Script Outlining', function() {
