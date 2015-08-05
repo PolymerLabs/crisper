@@ -1,6 +1,6 @@
 {
   "name": "crisper",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "Make an HTML file with inline scripts CSP compliant",
   "main": "index.js",
   "bin": {
