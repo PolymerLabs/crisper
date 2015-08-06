@@ -30,12 +30,6 @@ var args = nopt(
   }
 );
 
-var source = args.source || (args.remain && args.remain[0]);
-
-if (!source) {
-  console.log('Missing source html file!');
-  process.exit(1);
-}
 
 if (!args.html) {
   console.log('Missing output html file!');
@@ -47,7 +41,10 @@ if (!args.js) {
   process.exit(1);
 }
 
-source = path.resolve(source);
+var source = args.source || (args.remain && args.remain[0]);
+if (source) {
+  source = path.resolve(source);
+}
 var outhtml = path.resolve(args.html);
 var outscript = path.resolve(args.js);
 var outScriptUri = path.relative(path.dirname(args.html), args.js);
@@ -75,6 +72,7 @@ if (source) {
   });
   process.stdin.on('end', processSource);
 } else {
+  console.log('Missing source html file!');
   console.log('Supply file with STDIN or --source flag');
   process.exit(1);
 }
