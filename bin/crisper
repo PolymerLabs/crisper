@@ -19,9 +19,9 @@ var crisp = require('../index');
 
 var args = nopt(
   {
-    source: path,
-    html: path,
-    js: path
+    source: String,
+    html: String,
+    js: String
   },
   {
     s: ['--source'],
@@ -30,19 +30,27 @@ var args = nopt(
   }
 );
 
-var outhtml = args.html;
-var outscript = args.js;
-var outScriptUri = path.relative(path.dirname(args.html), args.js);
+var source = args.source || (args.remain && args.remain[0]);
 
-if (!outhtml) {
+if (!source) {
+  console.log('Missing source html file!');
+  process.exit(1);
+}
+
+if (!args.html) {
   console.log('Missing output html file!');
   process.exit(1);
 }
 
-if (!outscript) {
+if (!args.js) {
   console.log('Missing output js file!');
   process.exit(1);
 }
+
+source = path.resolve(source);
+var outhtml = path.resolve(args.html);
+var outscript = path.resolve(args.js);
+var outScriptUri = path.relative(path.dirname(args.html), args.js);
 
 var docText = '';
 
@@ -54,8 +62,8 @@ function processSource() {
   }
 }
 
-if (args.source) {
-  docText = fs.readFileSync(args.source, 'utf-8');
+if (source) {
+  docText = fs.readFileSync(source, 'utf-8');
   processSource();
 } else if (!process.stdin.isTTY) {
   process.stdin.setEncoding('utf-8');
