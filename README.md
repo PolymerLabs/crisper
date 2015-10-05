@@ -8,11 +8,29 @@ Command line usage:
     cat index.html | crisper -h build.html -j build.js
     crisper --source index.html --html build.html --js build.js
 
+Optional Flags:
+
+  - `--script-in-head`: in the output HTML file, place the script in `<head>`
+      with the `defer` attribute to provide better loading performance.
+      Note: this will not work correctly if your script contains
+      `document.write` calls.
+  - `--only-split`: Do not write include a `<script>` tag in the output HTML
+      file
+
 Library usage:
 
-    var output = crisper(htmlString, jsOutputFileName);
+    var output = crisp({
+      source: 'source HTML string',
+      jsFileName: 'output js file name.js',
+      scriptInHead: Boolean, //default false
+      onlySplit: Boolean // default false
+    });
     fs.writeFile(htmlOutputFileName, output.html, 'utf-8', ...);
     fs.writeFile(jsOutputFileName, output.js, 'utf-8', ...);
+
+Deprecated API:
+
+    var output = crisp.split('source HTML string', 'output js filename.js');
 
 ## Usage with Vulcanize
 
@@ -29,7 +47,12 @@ Or programmatically
       if (err) {
         return cb(err);
       } else {
-        var out = crisper.split(html, jsFilename)
+        var out = crisper({
+          source: html,
+          jsFileName: 'name of js file.js',
+          scriptInHead: Boolean, // default false
+          onlySplit: Boolean // default false
+        })
         cb(null, out.html, out.js);
       }
     });

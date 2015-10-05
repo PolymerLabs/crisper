@@ -30,9 +30,15 @@ var inlineScriptFinder = pred.AND(
 
 var noSemiColonInsertion = /\/\/|;\s*$|\*\/\s*$/;
 
-function split(source, jsFileName) {
+module.exports = function crisp(options) {
+  var source = options.source || '';
+  var jsFileName = options.jsFileName || '';
+  var scriptInHead = options.scriptInHead || false;
+  var onlySplit = options.onlySplit || false;
+
   var doc = dom5.parse(source);
   var body = dom5.query(doc, pred.hasTagName('body'));
+  var head = dom5.query(doc, pred.hasTagName('head'));
   var scripts = dom5.queryAll(doc, inlineScriptFinder);
 
   var contents = [];
@@ -53,10 +59,18 @@ function split(source, jsFileName) {
     contents.push(content);
   });
 
-  if (contents.length > 0) {
-    var newScript = dom5.constructors.element('script');
-    dom5.setAttribute(newScript, 'src', jsFileName);
-    dom5.append(body, newScript);
+  if (!onlySplit) {
+    if (contents.length > 0) {
+      var newScript = dom5.constructors.element('script');
+      dom5.setAttribute(newScript, 'src', jsFileName);
+      if (scriptInHead) {
+        dom5.setAttribute(newScript, 'defer', '');
+        head.childNodes.unshift(newScript);
+        newScript.parentNode = head;
+      } else {
+        dom5.append(body, newScript);
+      }
+    }
   }
 
   var html = dom5.serialize(doc);
@@ -67,8 +81,12 @@ function split(source, jsFileName) {
     html: html,
     js: js
   };
-}
+};
 
-module.exports = {
-  split: split
+// deprecated
+module.exports.split = function split(source, jsFileName) {
+  return module.exports({
+    source: source,
+    jsFileName: jsFileName
+  });
 };

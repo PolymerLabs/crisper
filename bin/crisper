@@ -21,7 +21,9 @@ var args = nopt(
   {
     source: String,
     html: String,
-    js: String
+    js: String,
+    'script-in-head': Boolean,
+    'only-split': Boolean
   },
   {
     s: ['--source'],
@@ -48,11 +50,18 @@ if (source) {
 var outhtml = path.resolve(args.html);
 var outscript = path.resolve(args.js);
 var outScriptUri = path.relative(path.dirname(args.html), args.js);
+var placeInHead = args['script-in-head'];
+var onlySplit = args['only-split'];
 
 var docText = '';
 
 function processSource() {
-  var split = crisp.split(docText, outScriptUri);
+  var split = crisp({
+    source: docText,
+    jsFileName: outScriptUri,
+    scriptInHead: placeInHead,
+    onlySplit: onlySplit
+  });
   fs.writeFileSync(outhtml, split.html, 'utf-8');
   if (split.js) {
     fs.writeFileSync(outscript, split.js, 'utf-8');

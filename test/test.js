@@ -20,7 +20,10 @@ suite('Crisper', function() {
     suite('Default', function () {
       var obj;
       setup(function() {
-        obj = crisp.split('<script>var foo = "bar";</script>', 'foo.js');
+        obj = crisp({
+          source: '<script>var foo = "bar";</script>',
+          jsFileName: 'foo.js'
+        });
       });
 
       test('return object with js and html properties', function() {
@@ -41,12 +44,20 @@ suite('Crisper', function() {
         assert.ok(outscript);
       });
 
+      test('Deprecated .split API produces same output', function() {
+        var obj2 = crisp.split('<script>var foo = "bar";</script>', 'foo.js');
+        assert.deepEqual(obj, obj2);
+      });
+
     });
 
-    suite('No JS', function() {
+    suite('No JS produces no script', function() {
       var obj;
       setup(function() {
-        obj = crisp.split('<body>Hello World</body>', 'foo.js');
+        obj = crisp({
+          source: '<body>Hello World</body>',
+          jsFileName: 'foo.js'
+        });
       });
 
       test('js property is empty', function() {
@@ -62,6 +73,46 @@ suite('Crisper', function() {
         assert.notOk(outscript);
       });
 
+    });
+
+    suite('script defer\'d in head', function() {
+      var obj;
+      setup(function() {
+        obj = crisp({
+          source: '<div></div><script>var a = "b";</script>',
+          jsFileName: 'foo.js',
+          scriptInHead: true
+        });
+      });
+
+      test('script in head with defer attribute', function() {
+        var doc = dom5.parse(obj.html);
+        var head = dom5.query(doc, pred.hasTagName('head'));
+        var script = dom5.query(head, pred.AND(
+          pred.hasTagName('script'),
+          pred.hasAttrValue('src', 'foo.js'),
+          pred.hasAttr('defer')
+        ));
+        assert.ok(script);
+      });
+    });
+
+    suite('Only Split Js', function() {
+      var obj;
+      setup(function() {
+        obj = crisp({
+          source: '<div></div><script>var a = "b";</script>',
+          jsFileName: 'foo.js',
+          onlySplit: true
+        });
+      });
+
+      test('no script tag in html', function() {
+        var doc = dom5.parse(obj.html);
+        var script = dom5.query(doc, pred.hasTagName('script'));
+        assert.ok(obj.js);
+        assert.notOk(script);
+      });
     });
   });
 
