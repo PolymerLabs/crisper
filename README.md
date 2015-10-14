@@ -60,5 +60,5 @@ Or programmatically
 ## Build Tools
 
 - [gulp-crisper](https://npmjs.com/package/gulp-crisper)
-- *No grunt plugin yet, will you write it?*
+- [grunt-crisper](https://www.npmjs.com/package/grunt-crisper)
 - *No broccoli plugin yet, will you write it?*
