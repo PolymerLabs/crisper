@@ -130,8 +130,10 @@ suite('Crisper', function() {
         var oneIndex = script.indexOf('one');
         var twoIndex = script.indexOf('two');
         var threeIndex = script.indexOf('three');
+        var fourIndex = script.indexOf('four');
         assert.ok(oneIndex < twoIndex);
         assert.ok(twoIndex < threeIndex);
+        assert.ok(threeIndex < fourIndex);
       });
 
       test('Unknown script types are not removed', function() {
