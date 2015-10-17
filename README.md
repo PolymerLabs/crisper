@@ -19,7 +19,7 @@ Optional Flags:
 
 Library usage:
 
-    var output = crisp({
+    var output = crisper({
       source: 'source HTML string',
       jsFileName: 'output js file name.js',
       scriptInHead: Boolean, //default false
@@ -30,7 +30,7 @@ Library usage:
 
 Deprecated API:
 
-    var output = crisp.split('source HTML string', 'output js filename.js');
+    var output = crisper.split('source HTML string', 'output js filename.js');
 
 ## Usage with Vulcanize
 
