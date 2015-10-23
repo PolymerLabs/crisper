@@ -16,6 +16,8 @@ Optional Flags:
       `document.write` calls.
   - `--only-split`: Do not write include a `<script>` tag in the output HTML
       file
+  - `--always-write-script`: Always create a .js file, even without any `<script>`
+      elements.
 
 Library usage:
 

@@ -75,6 +75,31 @@ suite('Crisper', function() {
 
     });
 
+    suite('No JS produces empty script when forced', function() {
+      var obj;
+      setup(function() {
+        obj = crisp({
+          source: '<body>Hello World</body>',
+          jsFileName: 'foo.js',
+          alwaysWriteScript: true
+        });
+      });
+
+      test('js property is the empty string', function() {
+        assert.ok(obj.js === "");
+      });
+
+      test('output js is linked via <script> in the output html <body>', function() {
+        var doc = dom5.parse(obj.html);
+        var outscript = dom5.query(doc, pred.AND(
+          pred.hasTagName('script'),
+          pred.hasAttrValue('src', 'foo.js')
+        ));
+        assert.ok(outscript);
+      });
+
+    });
+
     suite('script defer\'d in head', function() {
       var obj;
       setup(function() {

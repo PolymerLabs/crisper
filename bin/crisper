@@ -23,7 +23,8 @@ var args = nopt(
     html: String,
     js: String,
     'script-in-head': Boolean,
-    'only-split': Boolean
+    'only-split': Boolean,
+    'always-write-script': Boolean
   },
   {
     s: ['--source'],
@@ -52,6 +53,7 @@ var outscript = path.resolve(args.js);
 var outScriptUri = path.relative(path.dirname(args.html), args.js);
 var placeInHead = args['script-in-head'];
 var onlySplit = args['only-split'];
+var alwaysWriteScript = args['always-write-script'];
 
 var docText = '';
 
@@ -60,10 +62,11 @@ function processSource() {
     source: docText,
     jsFileName: outScriptUri,
     scriptInHead: placeInHead,
-    onlySplit: onlySplit
+    onlySplit: onlySplit,
+    alwaysWriteScript: alwaysWriteScript
   });
   fs.writeFileSync(outhtml, split.html, 'utf-8');
-  if (split.js) {
+  if (split.js || split.js === "" && alwaysWriteScript) {
     fs.writeFileSync(outscript, split.js, 'utf-8');
   }
 }
