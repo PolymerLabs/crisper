@@ -12,27 +12,68 @@
 // jshint node: true
 'use strict';
 
-var nopt = require('nopt');
 var fs = require('fs');
 var path = require('path');
 var crisp = require('../index');
 
-var args = nopt(
+var cliArgs = require('command-line-args');
+
+var cli = cliArgs([
   {
-    source: String,
-    html: String,
-    js: String,
-    'script-in-head': Boolean,
-    'only-split': Boolean,
-    'always-write-script': Boolean
+    name: 'source',
+    alias: 's',
+    type: String,
+    defaultOption: true,
+    description: 'Input HTML file to split into HTML and JS files'
   },
   {
-    s: ['--source'],
-    h: ['--html'],
-    j: ['--js']
+    name: 'html',
+    alias: 'h',
+    type: String,
+    description: 'Ouput HTML file'
+  },
+  {
+    name: 'js',
+    alias: 'j',
+    type: String,
+    description: 'Output JS file'
+  },
+  {
+    name: 'script-in-head',
+    type: Boolean,
+    defaultValue: true,
+    description: [
+      'If true, reference the output script in the beginning of <head> as <script defer>.',
+      'If false, reference script at the end of <body> synchronously.',
+      'The deferred script will better parallelize app startup, but will break some APIs like document.write.'
+    ].join(' ')
+  },
+  {
+    name: 'only-split',
+    type: Boolean,
+    description: 'Do not make a <script> tag in the output HTML.'
+  },
+  {
+    name: 'always-write-script',
+    type: Boolean,
+    description: 'Always create an output script file, even if it is empty.'
+  },
+  {
+    name: 'help',
+    type: Boolean,
+    description: 'Print usage'
   }
-);
+]);
 
+var args = cli.parse();
+
+if (args.help) {
+  console.log(cli.getUsage({
+    title: 'crisper',
+    description: 'Split inline scripts from an HTML file for CSP compliance'
+  }));
+  process.exit(0);
+}
 
 if (!args.html) {
   console.log('Missing output html file!');
@@ -44,7 +85,7 @@ if (!args.js) {
   process.exit(1);
 }
 
-var source = args.source || (args.remain && args.remain[0]);
+var source = args.source;
 if (source) {
   source = path.resolve(source);
 }
