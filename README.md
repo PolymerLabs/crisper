@@ -31,9 +31,9 @@ Library usage:
 var output = crisper({
   source: 'source HTML string',
   jsFileName: 'output js file name.js',
-  scriptInHead: Boolean, //default true
-  onlySplit: Boolean, // default false
-  alwaysWriteScript: Boolean // default false
+  scriptInHead: true, //default true
+  onlySplit: false, // default false
+  alwaysWriteScript: false // default false
 });
 fs.writeFile(htmlOutputFileName, output.html, 'utf-8', ...);
 fs.writeFile(jsOutputFileName, output.js, 'utf-8', ...);
@@ -52,16 +52,16 @@ vulcanize index.html --inline-script | crisper --html build.html --js build.js
 Or programmatically
 
 ```js
-vulcanize.process('index.html', function(err, html) {
+vulcanize.process('index.html', function(err, cb) {
   if (err) {
     return cb(err);
   } else {
     var out = crisper({
       source: html,
       jsFileName: 'name of js file.js',
-      scriptInHead: Boolean, // default true
-      onlySplit: Boolean, // default false
-      alwaysWriteScript: Boolean //default false
+      scriptInHead: true, // default true
+      onlySplit: false, // default false
+      alwaysWriteScript: false //default false
     })
     cb(null, out.html, out.js);
   }
