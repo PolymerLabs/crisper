@@ -65,23 +65,29 @@ var cli = cliArgs([
   }
 ]);
 
+function getUsage() {
+  return cli.getUsage({
+    title: 'crisper',
+    description: 'Split inline scripts from an HTML file for CSP compliance'
+  });
+}
+
 var args = cli.parse();
 
 if (args.help) {
-  console.log(cli.getUsage({
-    title: 'crisper',
-    description: 'Split inline scripts from an HTML file for CSP compliance'
-  }));
+  console.log(getUsage());
   process.exit(0);
 }
 
 if (!args.html) {
-  console.log('Missing output html file!');
+  console.error('Error: Missing output html file!');
+  console.error(getUsage());
   process.exit(1);
 }
 
 if (!args.js) {
-  console.log('Missing output js file!');
+  console.error('Error: Missing output js file!');
+  console.error(getUsage());
   process.exit(1);
 }
 
@@ -125,7 +131,8 @@ if (source) {
   });
   process.stdin.on('end', processSource);
 } else {
-  console.log('Missing source html file!');
-  console.log('Supply file with STDIN or --source flag');
+  console.error('Missing source html file!');
+  console.error('Supply file with STDIN or --source flag');
+  console.error(getUsage());
   process.exit(1);
 }
