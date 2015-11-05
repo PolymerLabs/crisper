@@ -33,7 +33,7 @@ var noSemiColonInsertion = /\/\/|;\s*$|\*\/\s*$/;
 module.exports = function crisp(options) {
   var source = options.source || '';
   var jsFileName = options.jsFileName || '';
-  var scriptInHead = options.scriptInHead || false;
+  var scriptInHead = options.scriptInHead !== false;
   var onlySplit = options.onlySplit || false;
   var alwaysWriteScript = options.alwaysWriteScript || false;
 
@@ -82,12 +82,4 @@ module.exports = function crisp(options) {
     html: html,
     js: js
   };
-};
-
-// deprecated
-module.exports.split = function split(source, jsFileName) {
-  return module.exports({
-    source: source,
-    jsFileName: jsFileName
-  });
 };

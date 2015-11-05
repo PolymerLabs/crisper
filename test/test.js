@@ -35,18 +35,15 @@ suite('Crisper', function() {
         assert.typeOf(obj.html, 'string');
       });
 
-      test('output js is linked via <script> in the output html <body>', function() {
+      test('output js is linked via <script defer> in the output html <head>', function() {
         var doc = dom5.parse(obj.html);
-        var outscript = dom5.query(doc, pred.AND(
+        var head = dom5.query(doc, pred.hasTagName('head'));
+        var outscript = dom5.query(head, pred.AND(
           pred.hasTagName('script'),
-          pred.hasAttrValue('src', 'foo.js')
+          pred.hasAttrValue('src', 'foo.js'),
+          pred.hasAttr('defer')
         ));
         assert.ok(outscript);
-      });
-
-      test('Deprecated .split API produces same output', function() {
-        var obj2 = crisp.split('<script>var foo = "bar";</script>', 'foo.js');
-        assert.deepEqual(obj, obj2);
       });
 
     });
@@ -64,7 +61,7 @@ suite('Crisper', function() {
         assert.notOk(obj.js);
       });
 
-      test('output js is NOT linked via <script> in the output html <body>', function() {
+      test('output js is NOT linked via <script> in the output html', function() {
         var doc = dom5.parse(obj.html);
         var outscript = dom5.query(doc, pred.AND(
           pred.hasTagName('script'),
@@ -89,7 +86,7 @@ suite('Crisper', function() {
         assert.ok(obj.js === "");
       });
 
-      test('output js is linked via <script> in the output html <body>', function() {
+      test('output js is linked via <script> in the output html', function() {
         var doc = dom5.parse(obj.html);
         var outscript = dom5.query(doc, pred.AND(
           pred.hasTagName('script'),
@@ -100,25 +97,27 @@ suite('Crisper', function() {
 
     });
 
-    suite('script defer\'d in head', function() {
+    suite('script placed in <body> if forced', function() {
       var obj;
       setup(function() {
         obj = crisp({
           source: '<div></div><script>var a = "b";</script>',
           jsFileName: 'foo.js',
-          scriptInHead: true
+          scriptInHead: false
         });
       });
 
       test('script in head with defer attribute', function() {
         var doc = dom5.parse(obj.html);
-        var head = dom5.query(doc, pred.hasTagName('head'));
-        var script = dom5.query(head, pred.AND(
+        var body = dom5.query(doc, pred.hasTagName('body'));
+        var script = dom5.query(body, pred.AND(
           pred.hasTagName('script'),
-          pred.hasAttrValue('src', 'foo.js'),
-          pred.hasAttr('defer')
+          pred.hasAttrValue('src', 'foo.js')
         ));
         assert.ok(script);
+        var expected = body.childNodes.length - 1;
+        var actual = body.childNodes.indexOf(script);
+        assert.equal(expected, actual);
       });
     });
 
@@ -147,7 +146,10 @@ suite('Crisper', function() {
       var obj;
       setup(function() {
         var docText = fs.readFileSync('test/html/index.html', 'utf-8');
-        obj = crisp.split(docText, 'foo.js');
+        obj = crisp({
+          source: docText,
+          jsFileName: 'foo.js'
+        });
       });
 
       test('Scripts are in order', function() {
