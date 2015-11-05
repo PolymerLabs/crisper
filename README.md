@@ -68,6 +68,15 @@ vulcanize.process('index.html', function(err, cb) {
 });
 ```
 
+## Breaking Changes from 1.x
+- Deprecated `split` API was removed
+  - `require('crisper').split()`
+- Default value of `script-in-head` flag changed to true
+  - This improves load performance by parallelizing HTML and script parsing
+  - This will break `document.write` calls
+  - If you experience problems, you can use `--script-in-head=false` argument or
+      `scriptInHead: false` in library usage.
+
 ## Build Tools
 
 - [gulp-crisper](https://npmjs.com/package/gulp-crisper)
