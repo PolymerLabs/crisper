@@ -68,6 +68,12 @@ var cli = cliArgs([
     name: 'help',
     type: Boolean,
     description: 'Print usage'
+  },
+  {
+    name: 'version',
+    alias: 'v',
+    type: Boolean,
+    description: 'Print version number'
   }
 ]);
 
@@ -82,6 +88,11 @@ var args = cli.parse();
 
 if (args.help) {
   console.log(getUsage());
+  process.exit(0);
+}
+
+if (args.version) {
+  console.log('crisper:', require('../package.json').version);
   process.exit(0);
 }
 
