@@ -16,14 +16,16 @@ The output html file will load the output js file at the top of `<head>` with a 
 Optional Flags:
 
   - `--script-in-head=false`
-    - in the output HTML file, place the script at the end of `<body>`
+    - In the output HTML file, place the script at the end of `<body>`
     - **Note**: Only use this if you need `document.write` support.
   - `--only-split`
     - Do not write include a `<script>` tag in the output HTML
-      file
+      file.
   - `--always-write-script`
     - Always create a .js file, even without any `<script>`
       elements.
+  - `-v` | `--version`
+    - Prints version number.
 
 Library usage:
 
