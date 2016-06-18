@@ -19,7 +19,7 @@ Optional Flags:
     - In the output HTML file, place the script at the end of `<body>`
     - **Note**: Only use this if you need `document.write` support.
   - `--only-split`
-    - Do not write include a `<script>` tag in the output HTML
+    - Do not write a `<script>` tag in the output HTML
       file.
   - `--always-write-script`
     - Always create a .js file, even without any `<script>`
@@ -44,7 +44,7 @@ fs.writeFile(jsOutputFileName, output.js, 'utf-8', ...);
 ## Usage with Vulcanize
 
 When using [vulcanize](https://github.com/Polymer/vulcanize), crisper can handle
-the html string output directly and write the CSP seperated files on the command
+the html string output directly and write the CSP separated files on the command
 line
 
 ```
