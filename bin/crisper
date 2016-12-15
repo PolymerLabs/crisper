@@ -30,7 +30,7 @@ var cli = cliArgs([
     name: 'html',
     alias: 'h',
     type: String,
-    description: 'Ouput HTML file'
+    description: 'Output HTML file'
   },
   {
     name: 'js',
