@@ -24,6 +24,14 @@ Optional Flags:
   - `--always-write-script`
     - Always create a .js file, even without any `<script>`
       elements.
+  - `--csp-hashable-script-loader`
+    - Create a hashable script loader that supports hash-based CSP with strict-dynamic.
+    - A strict CSP could look like this:
+    ```
+    script-src 'strict-dynamic' 'sha256-mUZwR5zj1qMvnzisSvfmC8JczLB0BUKW0Ohr3euDoIA=';
+    object-src 'none';
+    base-uri 'self';
+    ```
   - `-v` | `--version`
     - Prints version number.
 

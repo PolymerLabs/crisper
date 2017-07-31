@@ -11,6 +11,7 @@
 // jshint node: true
 'use strict';
 
+var crypto = require("crypto");
 var dom5 = require('dom5');
 var pred = dom5.predicates;
 
@@ -37,6 +38,7 @@ module.exports = function crisp(options) {
   var scriptInHead = options.scriptInHead !== false;
   var onlySplit = options.onlySplit || false;
   var alwaysWriteScript = options.alwaysWriteScript || false;
+  var cspHashableScriptLoader = options.cspHashableScriptLoader || false;
 
   var doc = dom5.parse(source);
   var body = dom5.query(doc, pred.hasTagName('body'));
@@ -64,13 +66,34 @@ module.exports = function crisp(options) {
   if (!onlySplit) {
     if (contents.length > 0 || alwaysWriteScript) {
       var newScript = dom5.constructors.element('script');
-      dom5.setAttribute(newScript, 'src', jsFileName);
+      var comment;
+      if (cspHashableScriptLoader) {
+        // hashable script loader to support hash-based CSP with strict-dynamic.
+        var loader = '// CSP \'strict-dynamic\' compatible script loader. ';
+        loader += 'Add \'strict-dynamic\' and a hash of this script to your CSP.\n';
+        loader += 'var s = document.createElement("script");\n';
+        loader += 's.src = "' + jsFileName + '";\n';
+        loader += '(document.body||document.head).appendChild(s);\n';
+        dom5.setTextContent(newScript, loader);
+
+        // Calculate hash of loader script for CSP.
+        var scriptHash = crypto.createHash('sha256');
+        scriptHash.update(loader, 'utf-8');
+        var digest = scriptHash.digest('base64');
+        var commentText = ' CSP hash: \'sha256-' + digest + '\' ';
+        comment = dom5.constructors.comment(commentText);
+      } else {
+        dom5.setAttribute(newScript, 'src', jsFileName);
+      }
       if (scriptInHead) {
         dom5.setAttribute(newScript, 'defer', '');
         head.childNodes.unshift(newScript);
         newScript.parentNode = head;
       } else {
         dom5.append(body, newScript);
+      }
+      if (cspHashableScriptLoader) {
+        dom5.insertBefore(newScript.parentNode, newScript, comment);
       }
     }
   }

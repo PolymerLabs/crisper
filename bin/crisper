@@ -65,6 +65,15 @@ var cli = cliArgs([
     description: 'Always create an output script file, even if it is empty.'
   },
   {
+    name: 'csp-hashable-script-loader',
+    type: Boolean,
+    description: [
+      'Create a hashable script loader that supports hash-based CSP with strict-dynamic.',
+      'A strict CSP could look like this:\n',
+      ' script-src \'strict-dynamic\' \'sha256-mUZwR5zj1qMvnzisSvfmC8JczLB0BUKW0Ohr3euDoIA=\'; object-src \'none\'; base-uri \'self\''
+    ].join(' ')
+  },
+  {
     name: 'help',
     type: Boolean,
     description: 'Print usage'
@@ -118,6 +127,7 @@ var outScriptUri = path.relative(path.dirname(args.html), args.js);
 var placeInHead = args['script-in-head'];
 var onlySplit = args['only-split'];
 var alwaysWriteScript = args['always-write-script'];
+var cspHashableScriptLoader = args['csp-hashable-script-loader'];
 
 var docText = '';
 
@@ -127,7 +137,8 @@ function processSource() {
     jsFileName: outScriptUri,
     scriptInHead: placeInHead,
     onlySplit: onlySplit,
-    alwaysWriteScript: alwaysWriteScript
+    alwaysWriteScript: alwaysWriteScript,
+    cspHashableScriptLoader: cspHashableScriptLoader
   });
   fs.writeFileSync(outhtml, split.html, 'utf-8');
   if (split.js || split.js === "" && alwaysWriteScript) {

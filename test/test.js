@@ -107,7 +107,7 @@ suite('Crisper', function() {
         });
       });
 
-      test('script in head with defer attribute', function() {
+      test('script in body', function() {
         var doc = dom5.parse(obj.html);
         var body = dom5.query(doc, pred.hasTagName('body'));
         var script = dom5.query(body, pred.AND(
@@ -118,6 +118,27 @@ suite('Crisper', function() {
         var expected = body.childNodes.length - 1;
         var actual = body.childNodes.indexOf(script);
         assert.equal(expected, actual);
+      });
+    });
+
+    suite('script loaded via hashable inline-script if forced', function() {
+      var obj;
+      setup(function() {
+        obj = crisp({
+          source: '<div></div><script>var a = "b";</script>',
+          jsFileName: 'foo.js',
+          cspHashableScriptLoader: true
+        });
+      });
+
+      test('script loaded through hashable loader script', function() {
+        var doc = dom5.parse(obj.html);
+        var head = dom5.query(doc, pred.hasTagName('head'));
+        var script = dom5.query(head, pred.AND(
+          pred.hasTagName('script'),
+          pred.NOT(pred.hasAttrValue('src', 'foo.js'))
+        ));
+        assert.ok(script);
       });
     });
 
