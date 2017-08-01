@@ -18,7 +18,7 @@ var crisp = require('../index');
 
 var cliArgs = require('command-line-args');
 
-var cli = cliArgs([
+var options = [
   {
     name: 'source',
     alias: 's',
@@ -84,16 +84,20 @@ var cli = cliArgs([
     type: Boolean,
     description: 'Print version number'
   }
-]);
+];
+
+var args = cliArgs(options);
 
 function getUsage() {
-  return cli.getUsage({
-    title: 'crisper',
-    description: 'Split inline scripts from an HTML file for CSP compliance'
-  });
+  return require('command-line-usage')([{
+    header: 'crisper',
+    content: 'Split inline scripts from an HTML file for CSP compliance',
+  },
+  {
+    header: 'Options',
+    optionList: options
+  }]);
 }
-
-var args = cli.parse();
 
 if (args.help) {
   console.log(getUsage());

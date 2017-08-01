@@ -20,7 +20,8 @@
   },
   "homepage": "https://github.com/PolymerLabs/crisper",
   "dependencies": {
-    "command-line-args": "^2.0.2",
+    "command-line-args": "^3.0.1",
+    "command-line-usage": "^3.0.8",
     "dom5": "^1.0.1"
   },
   "devDependencies": {
